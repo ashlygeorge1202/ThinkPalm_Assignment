@@ -8,3 +8,4 @@ def test_get_request(client):
 
     # httpbin echoes back query params
     assert json_data["args"]["foo"] == "bar
+
