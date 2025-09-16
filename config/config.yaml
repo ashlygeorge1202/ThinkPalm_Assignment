@@ -1,0 +1,8 @@
+http:
+  base_path: /
+  timeout: 10
+retry:
+  attempts: 3
+  backoff_seconds: 1
+reporting:
+  allure_enabled: true
