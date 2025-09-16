@@ -6,3 +6,4 @@ retry:
   backoff_seconds: 1
 reporting:
   allure_enabled: true
+
