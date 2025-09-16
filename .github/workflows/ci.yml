@@ -39,11 +39,10 @@ jobs:
           ls -R tests/
 
       - name: Run pytest with Allure results
+        continue-on-error: true
         run: |
           mkdir -p reports/allure-results
           pytest tests/ --maxfail=1 --disable-warnings -v --alluredir=reports/allure-results
-        # <-- continue-on-error must be at the same level as 'run', not indented under 'run'
-        continue-on-error: true
 
       - name: Upload Allure results
         if: always()
