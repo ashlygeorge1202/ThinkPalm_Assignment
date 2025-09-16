@@ -39,10 +39,10 @@ jobs:
           ls -R tests/
 
       - name: Run pytest with Allure results
+        continue-on-error: true   # <-- must be here, at the step level
         run: |
           mkdir -p reports/allure-results
           pytest tests/ --maxfail=1 --disable-warnings -v --alluredir=reports/allure-results
-        continue-on-error: true   # <-- fixes exit code 1 failing the workflow
 
       - name: Upload Allure results
         if: always()
