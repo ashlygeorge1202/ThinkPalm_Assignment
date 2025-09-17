@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -24,23 +24,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run pytest with allure
+      - name: Run pytest with Allure
         run: |
           mkdir -p reports/allure-results
-          pytest -v --alluredir=reports/allure-results || true
+          pytest --alluredir=reports/allure-results || true
+          echo "Contents of reports directory:"
           ls -R reports || true
-
-      - name: Install Allure
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y allure
 
       - name: Generate Allure Report
-        if: always()
         run: |
-          mkdir -p reports/allure-report
           allure generate reports/allure-results -o reports/allure-report --clean || true
-          ls -R reports || true
 
       - name: Upload Allure Results
         if: always()
