@@ -7,5 +7,5 @@ def test_get_request(client):
     json_data = response.json()
 
     # httpbin echoes back query params
-    assert json_data["args"]["foo"] == "bar
+    assert json_data["args"]["foo"] == "bar"
 
