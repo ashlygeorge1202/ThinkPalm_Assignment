@@ -27,12 +27,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Install Allure CLI
+      # 4️⃣ Install Allure CLI (direct download)
       - name: Install Allure CLI
         run: |
-          sudo apt-add-repository ppa:qameta/allure -y
-          sudo apt-get update
-          sudo apt-get install allure -y
+          ALLURE_VERSION=2.25.0
+          wget https://github.com/allure-framework/allure2/releases/download/$ALLURE_VERSION/allure-$ALLURE_VERSION.tgz
+          tar -zxvf allure-$ALLURE_VERSION.tgz
+          sudo mv allure-$ALLURE_VERSION /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
           allure --version
 
       # 5️⃣ Run pytest with Allure
