@@ -28,7 +28,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run pytest and generate Allure results
-        run: pytest --alluredir=reports/allure-results -v || true
+        run: pytest --alluredir=reports/allure-results -v --continue-on-collection-errors || true
 
       - name: Install Allure CLI
         run: |
