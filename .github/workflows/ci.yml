@@ -27,11 +27,22 @@ jobs:
       - name: Run pytest with allure
         run: |
           mkdir -p reports/allure-results
-          pytest -v --alluredir=reports/allure-results
+          pytest -vv --maxfail=1 --disable-warnings --alluredir=reports/allure-results
 
       - name: Debug report folder
         if: always()
         run: ls -R reports || echo "No reports directory found"
+
+      - name: Install Allure CLI
+        if: always()
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jre
+          wget https://github.com/allure-framework/allure2/releases/download/2.35.1/allure-2.35.1.tgz
+          tar -zxvf allure-2.35.1.tgz
+          sudo mv allure-2.35.1 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+          allure --version
 
       - name: Generate allure report
         if: always()
