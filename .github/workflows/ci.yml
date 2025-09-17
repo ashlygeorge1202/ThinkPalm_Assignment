@@ -27,17 +27,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Debug repo structure (optional, for troubleshooting)
-      - name: Debug repository structure
+      # 4️⃣ Install Allure CLI
+      - name: Install Allure CLI
         run: |
-          echo "Root directory contents:"
-          ls -R
+          sudo apt-add-repository ppa:qameta/allure -y
+          sudo apt-get update
+          sudo apt-get install allure -y
+          allure --version
 
       # 5️⃣ Run pytest with Allure
       - name: Run pytest with Allure
         run: |
           mkdir -p reports/allure-results
-          pytest -v --maxfail=1 --disable-warnings tests/ --alluredir=reports/allure-results || true
+          pytest -v --alluredir=reports/allure-results || true
           echo "Contents of reports directory:"
           ls -R reports || true
 
