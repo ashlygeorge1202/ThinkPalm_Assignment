@@ -1,46 +1,55 @@
-name: Python API Tests CI
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  test:
+  run-tests:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: 3.10
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Create Allure results folder
+    - name: Create reports directory
       run: mkdir -p reports/allure-results
 
-    - name: Run tests
+    - name: Run tests with Allure
+      run: pytest -v --alluredir=reports/allure-results || true
+
+    - name: List Allure results
+      run: ls -R reports/allure-results
+
+    - name: Install Allure
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17' # required for allure
+    - name: Download Allure
       run: |
-        pytest -v --alluredir=reports/allure-results || true
+        wget https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.zip -O allure.zip
+        unzip allure.zip -d allure
+        export PATH=$PATH:$PWD/allure/bin
+        allure --version
 
     - name: Generate Allure report
       run: |
         allure generate reports/allure-results -o reports/allure-report --clean || true
+        ls -R reports/allure-report
 
-    - name: Check allure-results folder
-      run: ls -R reports/allure-results
-
-    - name: Upload Allure Report
+    - name: Upload Allure report
       uses: actions/upload-artifact@v4
       with:
         name: allure-report
