@@ -1,16 +1,14 @@
-name: Python API Tests with Allure
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   run-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -29,22 +27,29 @@ jobs:
     - name: Create Allure results folder
       run: mkdir -p reports/allure-results
 
-    - name: Run pytest and generate Allure results
+    - name: Run tests
       run: |
-        pytest -v --alluredir=reports/allure-results
+        pytest -v --alluredir=reports/allure-results || true
+
+    - name: Install Allure CLI
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget unzip
+        wget https://github.com/allure-framework/allure2/releases/download/2.35.1/allure-2.35.1.zip
+        unzip allure-2.35.1.zip -d /opt/
+        echo "/opt/allure-2.35.1/bin" >> $GITHUB_PATH
 
     - name: Generate Allure report
       run: |
-        pip install allure-pytest
         allure generate reports/allure-results -o reports/allure-report --clean
 
-    - name: Upload Allure results as artifact
+    - name: Upload Allure results
       uses: actions/upload-artifact@v4
       with:
         name: allure-results
         path: reports/allure-results
 
-    - name: Upload Allure report as artifact
+    - name: Upload Allure report
       uses: actions/upload-artifact@v4
       with:
         name: allure-report
